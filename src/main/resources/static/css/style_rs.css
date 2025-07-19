@@ -1,0 +1,67 @@
+.vk-auth-body {
+    background-color: #e5eff5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Inter', Arial, sans-serif;
+    color: #4a6582;
+}
+
+.vk-auth-card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.vk-auth-card h1 {
+    font-size: 28px;
+    color: #2196f3;
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
+
+.vk-auth-card p {
+    font-size: 17px;
+    color: #5e7b99;
+    line-height: 1.5;
+    margin-bottom: 25px;
+
+
+.vk-link-below-form {
+    display: inline-block;
+    margin-top: 15px;
+    font-size: 16px;
+    color: #2196f3;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.vk-link-below-form:hover {
+    color: #1a7bbd;
+    text-decoration: underline;
+}
+
+
+@media (max-width: 480px) {
+    .vk-auth-card {
+        margin: 20px;
+        padding: 30px 20px;
+    }
+
+    .vk-auth-card h1 {
+        font-size: 24px;
+        margin-bottom: 25px;
+    }
+
+    .vk-auth-card p {
+        font-size: 16px;
+    }
+}

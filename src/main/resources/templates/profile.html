@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title th:text="${username} + ' - Профиль пользователя - VK Маркетплейс'"></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/style_profile.css}">
+
+</head>
+<body class="vk-page-body">
+
+<div class="vk-app-wrapper">
+
+    <header class="vk-header">
+        <div class="vk-header-content">
+            <a th:href="@{/ads}" class="vk-logo">
+
+                <span class="vk-logo-text">VK Маркетплейс</span>
+            </a>
+            <nav class="vk-main-nav">
+                <ul class="vk-nav-list">
+                    <li class="vk-nav-item"><a th:href="@{/ads}" class="vk-nav-link">Все объявления</a></li>
+                    <li class="vk-nav-item vk-nav-item-active"><a th:href="@{/ads/profile}" class="vk-nav-link">Мой профиль</a></li>
+                    <li class="vk-nav-item"><a th:href="@{/ads/new}" class="vk-nav-link vk-new-ad-button">Разместить объявление</a></li>
+                </ul>
+            </nav>
+            <div class="vk-user-controls">
+                <span sec:authentication="name" class="vk-username"></span>
+                <a th:href="@{/logout}" class="vk-button vk-button-logout">Выйти</a>
+            </div>
+        </div>
+    </header>
+
+
+    <main class="vk-content-area vk-content-profile">
+        <div class="vk-profile-header">
+            <h1 class="vk-profile-title">Профиль пользователя: <span class="vk-profile-username" th:text="${username}"></span></h1>
+            <p class="vk-profile-meta">Здесь вы можете управлять своими объявлениями.</p>
+        </div>
+
+        <div th:if="${successMessage}" class="vk-system-message vk-system-message-success">
+            <span class="vk-system-message-icon">✅</span>
+            <p th:text="${successMessage}"></p>
+        </div>
+        <div th:if="${errorMessage}" class="vk-system-message vk-system-message-error">
+            <span class="vk-system-message-icon">⚠️</span>
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+        <section class="vk-profile-ads-section">
+            <h2 class="vk-section-title">Мои объявления</h2>
+            <div th:if="${#lists.isEmpty(userAds)}" class="vk-empty-state">
+                <p class="vk-empty-state-text">У вас пока нет активных объявлений.</p>
+                <a th:href="@{/ads/new}" class="vk-button vk-button-primary">
+                    <span class="vk-button-icon">+</span> Создать первое объявление
+                </a>
+            </div>
+            <div th:unless="${#lists.isEmpty(userAds)}" class="vk-ads-grid">
+                <div th:each="ad : ${userAds}" class="vk-ad-card">
+                    <div class="vk-ad-card-header">
+                        <h3 class="vk-ad-card-title"><a th:href="@{/ads/{id}(id=${ad.id})}" th:text="${ad.title}" class="vk-ad-link">Название объявления</a></h3>
+                    </div>
+                    <div class="vk-ad-card-body">
+                        <p class="vk-ad-card-meta">Цена: <span class="vk-ad-card-price" th:text="${#numbers.formatDecimal(ad.price, 0, 'COMMA', 0, 'POINT')} + ' ₽'"></span></p>
+                        <p class="vk-ad-card-meta">Город: <span th:text="${ad.city}"></span></p>
+                        <p class="vk-ad-card-meta">Создано: <span th:text="${#temporals.format(ad.createdAt, 'dd MMMM yyyy в HH:mm')}"></span></p>
+                    </div>
+                    <div class="vk-ad-card-actions">
+                        <a th:href="@{/ads/edit/{id}(id=${ad.id})}" class="vk-button vk-button-secondary vk-button-small">Редактировать</a>
+                        <form th:action="@{/ads/delete/{id}(id=${ad.id})}" method="post" style="display:inline;"
+                              onsubmit="return confirm('Вы уверены, что хотите удалить объявление ' + [[${ad.title}]] + '? Это действие необратимо.');">
+                            <button type="submit" class="vk-button vk-button-danger vk-button-small">Удалить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <nav th:if="${totalPages > 1}" class="vk-pagination">
+            <ul class="vk-pagination-list">
+                <li th:classappend="${currentPage == 0} ? 'vk-pagination-disabled'" class="vk-pagination-item">
+                    <a th:if="${currentPage > 0}" th:href="@{/ads/profile(page=${currentPage-1}, size=${pageSize}, sortBy=${sortBy}, sortDirection=${sortDirection})}" class="vk-pagination-link">
+                        <span class="vk-pagination-arrow">«</span> Предыдущая
+                    </a>
+                    <span th:unless="${currentPage > 0}" class="vk-pagination-link">
+                        <span class="vk-pagination-arrow">«</span> Предыдущая
+                    </span>
+                </li>
+                <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                    th:classappend="${i == currentPage} ? 'vk-pagination-active'"
+                    class="vk-pagination-item">
+                    <a th:href="@{/ads/profile(page=${i}, size=${pageSize}, sortBy=${sortBy}, sortDirection=${sortDirection})}"
+                       th:text="${i + 1}"
+                       class="vk-pagination-link"></a>
+                </li>
+                <li th:classappend="${currentPage == totalPages - 1} ? 'vk-pagination-disabled'" class="vk-pagination-item">
+                    <a th:if="${currentPage < totalPages - 1}" th:href="@{/ads/profile(page=${currentPage+1}, size=${pageSize}, sortBy=${sortBy}, sortDirection=${sortDirection})}" class="vk-pagination-link">
+                        Следующая <span class="vk-pagination-arrow">»</span>
+                    </a>
+                    <span th:unless="${currentPage < totalPages - 1}" class="vk-pagination-link">
+                        Следующая <span class="vk-pagination-arrow">»</span>
+                    </span>
+                </li>
+            </ul>
+        </nav>
+    </main>
+
+    <footer class="vk-footer">
+        <div class="vk-footer-content">
+            <p>© 2025 VK Маркетплейс. Все права защищены.</p>
+            <p><a href="#" class="vk-footer-link">Политика конфиденциальности</a> | <a href="#" class="vk-footer-link">Условия использования</a></p>
+        </div>
+    </footer>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>VK Маркетплейс</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/style_ad_home.css}">
+
+</head>
+<body>
+<div class="vk-page-container">
+    <header class="vk-header">
+        <h1 class="vk-title">VK Маркетплейс</h1>
+        <div class="vk-auth-links">
+            <div sec:authorize="isAuthenticated()">
+                <span class="vk-user-info">Вы вошли как: <span sec:authentication="name"></span></span>
+                <a th:href="@{/logout}" class="vk-button vk-button-secondary vk-button-small">Выйти</a>
+                <a th:href="@{/ads/new}" class="vk-button vk-button-primary vk-button-small">Разместить товар</a>
+                <a th:href="@{/ads/profile}" class="vk-button vk-button-ternary vk-button-small">Личный кабинет</a>
+            </div>
+            <div sec:authorize="!isAuthenticated()">
+                <a th:href="@{/login}" class="vk-button vk-button-primary vk-button-small">Войти</a>
+                <a th:href="@{/register}" class="vk-button vk-button-secondary vk-button-small">Зарегистрироваться</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="vk-content-wrapper">
+        <div class="vk-filters-block">
+            <div class="vk-filter-header">
+                <span class="vk-filter-title"><i class="fas fa-filter vk-filter-icon"></i> Фильтры</span>
+                <button type="button" class="vk-button vk-button-link vk-button-toggle-filters">
+                    <span id="toggleText">Скрыть</span> <i class="fas fa-chevron-up vk-toggle-icon" id="toggleIcon"></i>
+                </button>
+            </div>
+            <form th:action="@{/ads}" method="get" class="vk-filter-form" id="filterForm">
+                <div class="vk-form-group vk-form-group-compact">
+                    <label for="searchTerm" class="vk-label">Поиск:</label>
+                    <input type="text" id="searchTerm" name="searchTerm" th:value="${searchTerm}" placeholder="По названию или описанию" class="vk-input vk-input-search"/>
+                </div>
+
+                <div class="vk-form-group vk-form-group-compact vk-form-group-inline vk-price-range">
+                    <label for="minPrice" class="vk-label">Цена:</label>
+                    <input type="number" id="minPrice" name="minPrice" th:value="${minPrice}" step="0.01" placeholder="от" class="vk-input vk-input-price">
+                    <span class="vk-price-separator">—</span>
+                    <input type="number" id="maxPrice" name="maxPrice" th:value="${maxPrice}" step="0.01" placeholder="до" class="vk-input vk-input-price">
+                </div>
+
+                <div class="vk-form-group vk-form-group-compact vk-form-group-inline vk-sort-options">
+                    <label for="sortBy" class="vk-label">Сортировать по:</label>
+                    <select id="sortBy" name="sortBy" class="vk-select vk-select-small">
+                        <option value="createdAt" th:selected="${sortBy == 'createdAt'}">Дате создания</option>
+                        <option value="price" th:selected="${sortBy == 'price'}">Цене</option>
+                        <option value="title" th:selected="${sortBy == 'title'}">Названию</option>
+                    </select>
+
+                    <label for="sortDirection" class="vk-label vk-label-hidden">Направление:</label>
+                    <select id="sortDirection" name="sortDirection" class="vk-select vk-select-small">
+                        <option value="asc" th:selected="${sortDirection == 'asc'}">По возрастанию</option>
+                        <option value="desc" th:selected="${sortDirection == 'desc'}">По убыванию</option>
+                    </select>
+                </div>
+
+                <div class="vk-form-group vk-form-group-compact vk-form-group-inline vk-page-size-select">
+                    <label for="pageSizeSelect" class="vk-label">Показывать по:</label>
+                    <select id="pageSizeSelect" name="size" class="vk-select vk-select-small">
+                        <option value="5" th:selected="${pageSize == 5}">5</option>
+                        <option value="10" th:selected="${pageSize == 10}">10</option>
+                        <option value="20" th:selected="${pageSize == 20}">20</option>
+                    </select>
+                    <label class="vk-label-text">объявлений</label>
+                </div>
+
+                <div class="vk-form-actions vk-form-actions-compact">
+                    <button type="submit" class="vk-button vk-button-primary">Применить фильтры</button>
+                    <a th:href="@{/ads}" class="vk-button vk-button-ternary">Сбросить</a>
+                </div>
+            </form>
+        </div>
+
+        <div th:if="${#lists.isEmpty(ads)}" class="vk-placeholder">
+            <p>Товаров не найдено.</p>
+        </div>
+        <div th:unless="${#lists.isEmpty(ads)}" class="vk-ad-list-container">
+            <div th:each="ad : ${ads}" class="vk-ad-card">
+                <a th:href="@{/ads/{id}(id=${ad.id})}" class="vk-ad-card-link">
+                    <div class="vk-ad-info">
+                        <h2 class="vk-ad-title" th:text="${ad.title}"></h2>
+                        <p class="vk-ad-description" th:text="${ad.description}"></p>
+                        <p class="vk-ad-price"><span th:text="${#numbers.formatDecimal(ad.price, 0, 'COMMA', 2, 'POINT')}"></span> <span class="vk-money-symbol">₽</span></p>
+                        <div class="vk-ad-meta">
+                            <span class="vk-ad-author">Продавец: <span th:text="${ad.author.username}"></span></span>
+                            <span class="vk-ad-date">Опубликовано: <span th:text="${#temporals.format(ad.createdAt, 'dd MMMM yyyy в HH:mm')}"></span></span>
+                        </div>
+                    </div>
+                    <div class="vk-ad-image-wrapper">
+                        <img th:if="${ad.imageUrl}" th:src="${ad.imageUrl}" alt="Изображение объявления" class="vk-ad-image">
+                        <div th:unless="${ad.imageUrl}" class="vk-ad-image-placeholder">
+                            <i class="fas fa-image"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <div sec:authorize="isAuthenticated()" class="vk-ad-actions">
+                    <span th:if="${#authentication.principal instanceof T(com.example.marketplace.model.User) and #authentication.principal.id == ad.author.id}" class="vk-owner-actions">
+                        <a th:href="@{/ads/edit/{id}(id=${ad.id})}" class="vk-button vk-button-secondary vk-button-small">Редактировать</a>
+                        <form th:action="@{/ads/delete/{id}(id=${ad.id})}" method="post" style="display:inline;">
+                            <button type="submit" class="vk-button vk-button-danger vk-button-small" onclick="return confirm('Вы уверены, что хотите удалить это объявление?');">Удалить</button>
+                        </form>
+                    </span>
+                </div>
+            </div>
+
+            <nav aria-label="Навигация по страницам" class="vk-pagination-container">
+                <ul class="vk-pagination">
+                    <li class="vk-pagination-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="vk-pagination-link" th:href="@{/ads(page=0, size=${pageSize}, sortBy=${sortBy}, sortDirection=${sortDirection}, minPrice=${minPrice}, maxPrice=${maxPrice}, searchTerm=${searchTerm})}">В начало</a>
+                    </li>
+                    <li class="vk-pagination-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="vk-pagination-link" th:href="@{/ads(page=${currentPage-1}, size=${pageSize}, sortBy=${sortBy}, sortDirection=${sortDirection}, minPrice=${minPrice}, maxPrice=${maxPrice}, searchTerm=${searchTerm})}">Назад</a>
+                    </li>
+                    <li class="vk-pagination-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                        th:classappend="${i == currentPage} ? 'active'">
+                        <a class="vk-pagination-link" th:href="@{/ads(page=${i}, size=${pageSize}, sortBy=${sortBy}, sortDirection=${sortDirection}, minPrice=${minPrice}, maxPrice=${maxPrice}, searchTerm=${searchTerm})}" th:text="${i + 1}"></a>
+                    </li>
+                    <li class="vk-pagination-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                        <a class="vk-pagination-link" th:href="@{/ads(page=${currentPage+1}, size=${pageSize}, sortBy=${sortBy}, sortDirection=${sortDirection}, minPrice=${minPrice}, maxPrice=${maxPrice}, searchTerm=${searchTerm})}">Вперед</a>
+                    </li>
+                    <li class="vk-pagination-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                        <a class="vk-pagination-link" th:href="@{/ads(page=${totalPages - 1}, size=${pageSize}, sortBy=${sortBy}, sortDirection=${sortDirection}, minPrice=${minPrice}, maxPrice=${maxPrice}, searchTerm=${searchTerm})}">В конец</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </main>
+</div>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleButton = document.querySelector('.vk-button-toggle-filters');
+        const filterForm = document.getElementById('filterForm');
+        const toggleText = document.getElementById('toggleText');
+        const toggleIcon = document.getElementById('toggleIcon');
+
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const hasActiveFilters = urlParams.has('searchTerm') || urlParams.has('minPrice') || urlParams.has('maxPrice') ||
+                                 (urlParams.get('sortBy') && urlParams.get('sortBy') !== 'createdAt') ||
+                                 (urlParams.get('sortDirection') && urlParams.get('sortDirection') !== 'asc') ||
+                                 (urlParams.get('size') && urlParams.get('size') !== '10');
+
+        if (!hasActiveFilters) {
+            filterForm.style.display = 'none';
+            toggleText.textContent = 'Развернуть';
+            toggleIcon.classList.remove('fa-chevron-up');
+            toggleIcon.classList.add('fa-chevron-down');
+        }
+
+        toggleButton.addEventListener('click', function() {
+            if (filterForm.style.display === 'none') {
+                filterForm.style.display = 'block';
+                toggleText.textContent = 'Скрыть';
+                toggleIcon.classList.remove('fa-chevron-down');
+                toggleIcon.classList.add('fa-chevron-up');
+            } else {
+                filterForm.style.display = 'none';
+                toggleText.textContent = 'Развернуть';
+                toggleIcon.classList.remove('fa-chevron-up');
+                toggleIcon.classList.add('fa-chevron-down');
+            }
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+.vk-form-block {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 25px 30px;
+    margin-bottom: 25px;
+}
+
+.vk-form-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+}
+
+.vk-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.vk-form-group {
+    position: relative;
+}
+
+.vk-form-label {
+    display: block;
+    font-size: 15px;
+    font-weight: 500;
+    color: #5a708a;
+    margin-bottom: 8px;
+}
+
+.vk-form-input,
+.vk-form-textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    color: #333;
+    background-color: #fafafe;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    outline: none;
+    resize: vertical;
+}
+
+.vk-form-input::placeholder,
+.vk-form-textarea::placeholder {
+    color: #a0a8b4;
+}
+
+.vk-form-input:focus,
+.vk-form-textarea:focus {
+    border-color: #2196f3;
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+    background-color: #fff;
+}
+
+.vk-form-textarea {
+    min-height: 120px;
+}
+
+.vk-form-append {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(calc(-50% + 15px));
+    font-size: 16px;
+    color: #5a708a;
+    pointer-events: none;
+    background-color: transparent;
+    padding-left: 5px;
+}
+
+.vk-error-message {
+    color: #e6605b;
+    font-size: 13px;
+    margin-top: 5px;
+    display: block;
+}
+
+.vk-form-file-input {
+    display: none;
+}
+
+.vk-form-file-status {
+    display: block;
+    width: 100%;
+    padding: 20px;
+    border: 2px dashed #b0c4de;
+    border-radius: 8px;
+    background-color: #f7f9fc;
+    color: #777;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+    font-size: 15px;
+}
+
+.vk-form-file-status:hover {
+    border-color: #2196f3;
+    background-color: #e8f4fd;
+}
+
+.vk-file-input-button {
+    color: #2196f3;
+    font-weight: 500;
+    text-decoration: underline;
+}
+
+.vk-drag-active {
+    border-color: #2196f3;
+    background-color: #e8f4fd;
+    box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.15);
+}
+
+.vk-current-image-preview {
+    margin-top: 15px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #fcfcfc;
+    text-align: center;
+}
+
+.vk-current-image-preview p {
+    font-size: 14px;
+    color: #5a708a;
+    margin-bottom: 10px;
+}
+
+.vk-current-image {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 6px;
+    object-fit: contain;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.vk-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+    margin-top: 10px;
+}
+
+.vk-button-link-form {
+    background-color: transparent;
+    border: none;
+    color: #6c757d;
+    font-weight: 500;
+    padding: 10px 15px;
+    transition: color 0.2s ease;
+}
+
+.vk-button-link-form:hover {
+    color: #333;
+    text-decoration: underline;
+}
+
+.vk-header .vk-title a {
+    color: #2c3e50;
+}
+.vk-header .vk-title a:hover {
+    color: #2196f3;
+}
+
+.vk-link-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 500;
+    color: #5a708a;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.vk-link-header:hover {
+    background-color: #f0f2f5;
+    color: #2c3e50;
+}
+
+.vk-link-header i {
+    color: #888;
+}
+.vk-link-header:hover i {
+    color: #2c3e50;
+}
+
+@media (max-width: 768px) {
+    .vk-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    .vk-auth-links {
+        width: 100%;
+        justify-content: center;
+    }
+    .vk-form-block {
+        padding: 20px;
+    }
+    .vk-form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .vk-button, .vk-button-link-form {
+        width: 100%;
+        text-align: center;
+    }
+}

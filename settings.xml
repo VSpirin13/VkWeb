@@ -1,0 +1,14 @@
+<settings>
+    <proxies>
+        <proxy>
+            <id>optional</id>
+            <active>true</active>
+            <protocol>http</protocol>
+            <host>your.proxy.host</host>
+            <port>8080</port>
+            <username>your_username</username>
+            <password>your_password</password>
+            <nonProxyHosts>local.net|some.host.com</nonProxyHosts>
+        </proxy>
+    </proxies>
+</settings>

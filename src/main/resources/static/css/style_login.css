@@ -1,0 +1,167 @@
+.vk-auth-body {
+    background-color: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.vk-auth-container {
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+}
+
+.vk-auth-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 30px;
+    text-align: center;
+    overflow: hidden;
+}
+
+.vk-auth-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 25px;
+}
+
+.vk-system-message {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    font-size: 15px;
+    text-align: left;
+}
+
+.vk-system-message p {
+    margin: 0;
+    line-height: 1.4;
+}
+
+.vk-system-message-icon {
+    font-size: 20px;
+    line-height: 1;
+}
+
+.vk-system-message-error {
+    background-color: #ffe0e0;
+    border: 1px solid #ff9999;
+    color: #cc0000;
+}
+
+.vk-system-message-info {
+    background-color: #e0f2ff;
+    border: 1px solid #99ccff;
+    color: #0066cc;
+}
+
+.vk-system-message-success {
+    background-color: #e6ffe6;
+    border: 1px solid #99ff99;
+    color: #009900;
+}
+
+.vk-auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.vk-form-group {
+    text-align: left;
+}
+
+.vk-form-label {
+    display: block;
+    font-size: 15px;
+    font-weight: 500;
+    color: #5a708a;
+    margin-bottom: 8px;
+}
+
+.vk-form-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    color: #333;
+    background-color: #fafafe;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.vk-form-input::placeholder {
+    color: #a0a8b4;
+}
+
+.vk-form-input:focus {
+    border-color: #2196f3;
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+    background-color: #fff;
+}
+
+.vk-form-actions {
+    margin-top: 10px;
+}
+
+.vk-button-full-width {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+.vk-auth-footer {
+    margin-top: 25px;
+    font-size: 15px;
+    color: #666;
+}
+
+.vk-auth-footer a.vk-link {
+    color: #2196f3;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease, text-decoration 0.2s ease;
+}
+
+.vk-auth-footer a.vk-link:hover {
+    color: #1a7bbd;
+    text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+    .vk-auth-card {
+        padding: 20px;
+        margin: 0 10px;
+    }
+    .vk-auth-title {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+    .vk-system-message {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+    .vk-form-input {
+        padding: 10px 12px;
+        font-size: 15px;
+    }
+    .vk-button-full-width {
+        padding: 12px 15px;
+        font-size: 16px;
+    }
+}
+

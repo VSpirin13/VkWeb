@@ -1,0 +1,48 @@
+services:
+  app:
+    image: ghcr.io/vspirin13/vkweb/app:latest
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/marketplace_db
+      SPRING_DATASOURCE_USERNAME: marketplace_user
+      SPRING_DATASOURCE_PASSWORD: 96papoha
+      JWT_SECRET: NaABMvupCeNcxcVfdukuVqV4Bf1olObJ5CwSoXoDOg7y4zSBOE4gX9f/iLldtyX9lKgcE7K/QVKqkFhczslAFA==
+    depends_on:
+      - db
+    networks:
+      - marketplace_network
+
+  db:
+    image: ghcr.io/vspirin13/vkweb/db:17-alpine
+    restart: always
+    environment:
+        POSTGRES_USER: marketplace_user
+        POSTGRES_PASSWORD: 96papoha
+        POSTGRES_DB: marketplace_db
+    volumes:
+        - ./src/main/resources/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+    ports:
+      - "5432:5432"
+    networks:
+      - marketplace_network
+
+  pgadmin:
+    image: ghcr.io/vspirin13/vkweb/pgadmin:latest
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_SERVER_DEFAULT_PORT: 5432
+    ports:
+      - "5050:80"
+    networks:
+      - marketplace_network
+    depends_on:
+      - db
+
+networks:
+  marketplace_network:
+    driver: bridge
+

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${ad.id != null ? 'Редактировать объявление' : 'Создать новое объявление'}"></title>
+    <link rel="stylesheet" th:href="@{/css/style_create.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+</head>
+<body>
+<div class="vk-page-container">
+    <header class="vk-header">
+        <h1 class="vk-title">
+            <span th:if="${ad.id != null}">
+                <a th:href="@{/ads/details/{id}(id=${ad.id})}" style="color: #fff; text-decoration: none;">
+                    <i class="fas fa-arrow-left" style="margin-right: 10px;"></i> Редактирование
+                </a>
+            </span>
+            <span th:unless="${ad.id != null}">
+                <a th:href="@{/ads}" style="color: #fff; text-decoration: none;">
+                    <i class="fas fa-arrow-left" style="margin-right: 10px;"></i> Новое объявление
+                </a>
+            </span>
+        </h1>
+        <div class="vk-auth-links">
+            <a th:href="@{/ads/profile}" class="vk-link-header"><i class="fas fa-user-circle"></i> Профиль</a>
+            <a th:href="@{/ads}" class="vk-link-header"><i class="fas fa-list-alt"></i> Все объявления</a>
+            <a th:href="@{/logout}" class="vk-link-header"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+        </div>
+    </header>
+
+    <div class="vk-content-wrapper">
+        <div class="vk-form-block">
+            <h2 class="vk-form-title" th:text="${ad.id != null ? 'Редактирование объявления' : 'Создание нового объявления'}"></h2>
+
+            <form th:action="${ad.id != null ? '/ads/edit/' + ad.id : '/ads/new'}"
+                  th:object="${ad}"
+                  method="post"
+                  enctype="multipart/form-data"
+                  class="vk-form">
+
+                <input type="hidden" th:field="*{id}" th:if="${ad.id != null}"/>
+
+                <div class="vk-form-group">
+                    <label for="title" class="vk-form-label">Название:*</label>
+                    <input type="text" id="title" th:field="*{title}" required class="vk-form-input" placeholder="Например: Продам iPhone 13 Pro Max"/>
+                    <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="vk-error-message"></div>
+                </div>
+
+                <div class="vk-form-group">
+                    <label for="description" class="vk-form-label">Описание:*</label>
+                    <textarea id="description" th:field="*{description}" rows="5" required class="vk-form-textarea" placeholder="Подробное описание вашего товара или услуги"></textarea>
+                    <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="vk-error-message"></div>
+                </div>
+
+                <div class="vk-form-group">
+                    <label for="price" class="vk-form-label">Цена:*</label>
+                    <input type="number" id="price" th:field="*{price}" step="0.01" min="0" required class="vk-form-input" placeholder="0.00"/>
+                    <span class="vk-form-append">₽</span>
+                    <div th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="vk-error-message"></div>
+                </div>
+
+                <div class="vk-form-group">
+                    <label for="imageFile" class="vk-form-label">Изображение:</label>
+                    <input type="file" id="imageFile" name="imageFile" accept="image/*" class="vk-form-file-input"
+                           onchange="updateFileStatus(this)"/>
+
+                    <label for="imageFile" class="vk-form-file-status" id="fileStatusLabel">
+                        Перетащите файлы сюда или <span class="vk-file-input-button">выберите из файла</span>
+                    </label>
+
+                    <div th:if="${ad.id != null and ad.imageUrl != null and ad.imageUrl.length() > 0}" class="vk-current-image-preview">
+                        <p>Текущее изображение:</p>
+                        <img th:src="${ad.imageUrl}" alt="Текущее изображение" class="vk-current-image"/>
+
+                    </div>
+                </div>
+
+                <div class="vk-form-group">
+                    <label for="city" class="vk-form-label">Город:*</label>
+                    <input type="text" id="city" th:field="*{city}" required class="vk-form-input" placeholder="Например: Москва"/>
+                    <div th:if="${#fields.hasErrors('city')}" th:errors="*{city}" class="vk-error-message"></div>
+                </div>
+
+                <div class="vk-form-group">
+                    <label for="phoneNumber" class="vk-form-label">Телефон:*</label>
+                    <input type="text" id="phoneNumber" th:field="*{phoneNumber}" required class="vk-form-input" placeholder="+7 (XXX) XXX-XX-XX"/>
+                    <div th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="vk-error-message"></div>
+                </div>
+
+                <div class="vk-form-actions">
+                    <button type="submit" class="vk-button vk-button-primary">
+                        <span th:text="${ad.id != null ? 'Сохранить изменения' : 'Создать объявление'}"></span>
+                    </button>
+                    <a th:href="@{/ads}" class="vk-button vk-button-secondary vk-button-link-form">Отмена</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function updateFileStatus(input) {
+        const fileStatusLabel = document.getElementById('fileStatusLabel');
+        if (input.files && input.files[0]) {
+            fileStatusLabel.textContent = `Выбран файл: ${input.files[0].name}`;
+        } else {
+
+            fileStatusLabel.innerHTML = 'Перетащите файлы сюда или <span class="vk-file-input-button">выберите из файла</span>';
+        }
+    }
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileStatusLabel = document.getElementById('fileStatusLabel');
+        const imageFileInput = document.getElementById('imageFile');
+
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            fileStatusLabel.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            fileStatusLabel.addEventListener(eventName, highlight, false);
+        });
+
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            fileStatusLabel.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            fileStatusLabel.classList.add('vk-drag-active');
+        }
+
+        function unhighlight(e) {
+            fileStatusLabel.classList.remove('vk-drag-active');
+        }
+
+
+        fileStatusLabel.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+
+
+            imageFileInput.files = files;
+
+            updateFileStatus(imageFileInput);
+        }
+
+
+        const phoneNumberInput = document.getElementById('phoneNumber');
+        if (phoneNumberInput) {
+            phoneNumberInput.addEventListener('input', function (e) {
+                let value = e.target.value.replace(/\D/g, '');
+
+                if (!value) {
+                    e.target.value = '';
+                    return;
+                }
+
+                let formattedValue = '';
+                if (value.startsWith('8')) {
+                    value = '7' + value.substring(1); // Заменяем 8 на 7
+                }
+
+                if (value.startsWith('7')) {
+                    formattedValue = '+7 ';
+                    if (value.length > 1) {
+                        formattedValue += '(' + value.substring(1, 4);
+                    }
+                    if (value.length >= 5) {
+                        formattedValue += ') ' + value.substring(4, 7);
+                    }
+                    if (value.length >= 8) {
+                        formattedValue += '-' + value.substring(7, 9);
+                    }
+                    if (value.length >= 10) {
+                        formattedValue += '-' + value.substring(9, 11);
+                    }
+                } else if (value.length > 0) {
+
+                    formattedValue = '+' + value;
+                }
+
+                e.target.value = formattedValue.trim().substring(0, 18);
+            });
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title th:text="${ad.title}"></title>
+    <link rel="stylesheet" th:href="@{/css/style_details.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+<div class="vk-page-container">
+    <header class="vk-header">
+        <h1 class="vk-title">
+            <a th:href="@{/ads}" style="color: #fff; text-decoration: none;">
+                <i class="fas fa-arrow-left" style="margin-right: 10px;"></i>
+                <span th:text="${ad.title}"></span>
+            </a>
+        </h1>
+        <div class="vk-auth-links">
+            <th:block sec:authorize="isAuthenticated()">
+                <span class="vk-user-info" th:text="${#authentication.name}">username</span>
+
+            </th:block>
+        </div>
+    </header>
+
+    <div class="vk-content-wrapper">
+        <div class="vk-ad-details-block">
+            <div class="vk-ad-details-header">
+                <h2 class="vk-ad-details-title" th:text="${ad.title}">Название товара</h2>
+                <span class="vk-ad-details-price">
+                    <span th:text="${ad.price}">12345</span> <span class="vk-money-symbol">₽</span>
+                </span>
+            </div>
+
+            <div class="vk-ad-details-image-container" th:if="${ad.imageUrl}">
+                <img th:src="${ad.imageUrl}" alt="Изображение объявления" class="vk-ad-details-image">
+            </div>
+            <div class="vk-ad-details-image-container" th:unless="${ad.imageUrl}">
+                <i class="fas fa-image vk-ad-image-placeholder-large"></i>
+            </div>
+
+            <div class="vk-separator"></div>
+
+            <div class="vk-info-block">
+                <h3 class="vk-info-title"><i class="fas fa-info-circle"></i> Описание</h3>
+                <p class="vk-ad-text" th:text="${ad.description}">
+                    Подробное описание объявления, рассказывающее о товаре или услуге.
+                </p>
+                <div class="vk-info-line">
+                    <span class="vk-info-label"><i class="fas fa-map-marker-alt"></i> Город:</span>
+                    <span class="vk-info-value" th:text="${ad.city}"></span>
+                </div>
+                <div class="vk-info-line">
+                    <span class="vk-info-label"><i class="fas fa-phone-alt"></i> Телефон:</span>
+                    <span class="vk-info-value" th:text="${ad.phoneNumber}"></span>
+                </div>
+                <div class="vk-info-line">
+                    <span class="vk-info-label"><i class="fas fa-user"></i> Автор:</span>
+                    <span class="vk-info-value"><a th:href="@{/ads/profile}" th:text="${ad.author.username}" class="vk-link">username</a></span>
+                </div>
+                <div class="vk-info-line">
+                    <span class="vk-info-label"><i class="fas fa-calendar-alt"></i> Дата создания:</span>
+                    <span class="vk-info-value" th:text="${#temporals.format(ad.createdAt, 'dd-MM-yyyy HH:mm')}"></span>
+                </div>
+            </div>
+
+            <div class="vk-separator"></div>
+
+            <div sec:authorize="isAuthenticated()" class="vk-ad-actions-footer">
+                <div th:if="${#authentication.name == ad.author.username}" class="vk-button-group">
+                    <a th:href="@{/ads/edit/{id}(id=${ad.id})}" class="vk-button vk-button-secondary">
+                        <i class="fas fa-edit"></i> Редактировать
+                    </a>
+                    <form th:action="@{/ads/delete/{id}(id=${ad.id})}" method="post" style="display:inline;" onsubmit="return confirm('Вы уверены, что хотите удалить это объявление?');">
+                        <button type="submit" class="vk-button vk-button-danger">
+                            <i class="fas fa-trash-alt"></i> Удалить
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="vk-back-link">
+            <a th:href="@{/ads}" class="vk-button vk-button-link">
+                <i class="fas fa-angle-left"></i> Вернуться к списку объявлений
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
